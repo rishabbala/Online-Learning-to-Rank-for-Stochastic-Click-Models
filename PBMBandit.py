@@ -189,6 +189,8 @@ if __name__ == '__main__':
 
 	args = parser.parse_args()
 
+	random.seed(args.exp_num)
+
 	if dataset == 'synthetic':
 		data = genPBMdataset(num_arms, seed_size)
 	
@@ -199,7 +201,7 @@ if __name__ == '__main__':
 	simExperiment = simulateOnlineData(data, seed_size, iterations)
 
 	target_arms = data.target_arms[:-1]
-	
+
 	# target_arms = random.sample(range(data.num_arms), seed_size)
 
 	algorithms = {}

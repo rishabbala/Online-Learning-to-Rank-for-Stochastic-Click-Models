@@ -11,8 +11,8 @@ class genPBMdataset():
 
         self.num_arms = num_arms
         for i in range(num_arms):
-            self.w[i] = random.uniform(0.5, 1) ## click prob
-            self.x[i] = random.uniform(0.5, 1) ## examination prob
+            self.w[i] = random.uniform(0.25, 1) ## click prob
+            self.x[i] = random.uniform(0.25, 1) ## examination prob
             # self.x[i] = 1/(i+1+random.uniform(0, 0.01))
 
             self.total_prob[i] = self.w[i]*self.x[i]
