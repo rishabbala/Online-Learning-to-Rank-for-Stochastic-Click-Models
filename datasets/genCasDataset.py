@@ -18,8 +18,11 @@ class genCasDataset():
         # # exit()
 
         self.best_arms = sorted(self.w, key=lambda x: self.w[x], reverse=True)[:seed_size]
-        self.target_arms = sorted(self.w, key=lambda x: self.w[x])[:seed_size]
+        self.target = sorted(self.w, key=lambda x: self.w[x])[seed_size-1]
+        self.target_arms = sorted(self.w, key=lambda x: self.w[x])[:seed_size][::-1]
 
         self.click_prob = 1
         for i in self.best_arms:
             self.click_prob *= (1 - self.w[i])
+		
+        self.w[-10000] = 0

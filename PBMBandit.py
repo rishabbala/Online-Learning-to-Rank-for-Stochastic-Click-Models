@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 from PBMConf import *
 from datasets.genPBMdataset import genPBMdataset
 from datasets.genMovieLensDataset import genMovieLensDataset
+from BanditAlg.pbmUCB import PbmUCB
+from BanditAlg.pbmUCB_Attack import PbmUCB_Attack
 from BanditAlg.casUCB1 import CascadeUCB1
 from BanditAlg.casUCB1_Attack import CascadeUCB1_Attack
 from BanditAlg.BatchRank import BatchRank
@@ -44,8 +46,8 @@ class simulateOnlineData:
 
 				w = sorted(self.dataset.total_prob, key=lambda x: self.dataset.total_prob[x], reverse=True)
 				# print("W", w)
-				print("S", S)
-				print(self.dataset.target_arms)
+				# print("S", S)
+				# print(self.dataset.target_arms)
 
 				click = []
 				for i in range(len(S)):
@@ -205,12 +207,15 @@ if __name__ == '__main__':
 	# target_arms = random.sample(range(data.num_arms), seed_size)
 
 	algorithms = {}
-
+	# print(dataset)
 	# algorithms['BatchRank'] = BatchRank(data, data.num_arms, seed_size, target_arms, iterations)
-	algorithms['BatchRankAttack'] = BatchRankAttack(data, data.num_arms, seed_size, target_arms, iterations)
+	# algorithms['BatchRankAttack'] = BatchRankAttack(data, data.num_arms, seed_size, target_arms, iterations)
 
 	# algorithms['CascadeUCB1'] = CascadeUCB1(data, data.num_arms, seed_size, target_arms)
 	# algorithms['CascadeUCB1Attack'] = CascadeUCB1_Attack(data, data.num_arms, seed_size, target_arms)
+
+	# algorithms['pbmUCB'] = PbmUCB(data, data.num_arms, seed_size, target_arms)
+	algorithms['pbmUCBAttack'] = PbmUCB_Attack(data, data.num_arms, seed_size, target_arms)
 
 	# algorithms['TopRank_Attack'] = TopRank(data, data.num_arms, seed_size, target_arms, iterations)
 	
