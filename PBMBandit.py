@@ -215,9 +215,9 @@ if __name__ == '__main__':
 	# algorithms['CascadeUCB1Attack'] = CascadeUCB1_Attack(data, data.num_arms, seed_size, target_arms)
 
 	# algorithms['pbmUCB'] = PbmUCB(data, data.num_arms, seed_size, target_arms)
-	algorithms['pbmUCBAttack'] = PbmUCB_Attack(data, data.num_arms, seed_size, target_arms)
+	# algorithms['pbmUCBAttack'] = PbmUCB_Attack(data, data.num_arms, seed_size, target_arms)
 
-	# algorithms['TopRank_Attack'] = TopRank(data, data.num_arms, seed_size, target_arms, iterations)
+	algorithms['TopRank_Attack'] = TopRank(data, data.num_arms, seed_size, target_arms, iterations)
 	
 
 	simExperiment.runAlgorithms(algorithms)

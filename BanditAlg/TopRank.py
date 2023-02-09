@@ -61,14 +61,22 @@ class TopRank():
 		return S >= np.sqrt(2 * N * np.log(c * np.sqrt(self.iterations) * np.sqrt(N)))
 
 
-	def updateParameters(self, C, best_arms):
+	def updateParameters(self, best_arms, C):
+
+		# if self.dataset.target in self.best_arms:
+		# 	print("C:",C)
+		# 	print("SB:",self.best_arms)
+		# 	print("ST:",self.target_arms)
+
+		# print("C", C)
+		# print("SB",self.best_arms)
 
 		clicks = np.zeros(self.num_arms)
-		for i in range(self.seed_size):
-			if C[i] == 1:
+		if len(C) > 0:
+			for i in range(len(C)):
 				clicks[self.best_arms[C[i]]] = 1 
-
-		print("C", clicks)
+		
+		# print("clicks:",clicks)
 
 		# update S and N
 		for c in self.partitions:
@@ -113,7 +121,9 @@ class TopRank():
 				k += len(good_items)
 				remain_items = remain_items.intersection(bad_items)
 				c += 1
-	
+			# print([self.partitions[x].items for x in self.partitions])
+			# exit()
+
 		self.numTargetPlayed()
 
 	
@@ -124,7 +134,7 @@ class TopRank():
 		# print("SB", self.best_arms)
 		# print("ST", self.dataset.target_arms)
 
-		if self.cost[-1] == 0 and self.best_arms[0] == self.dataset.target:
+		if self.best_arms[0] == self.dataset.target:
 			num_targetarm_played += 1
 
 		# print("B", num_targetarm_played)
