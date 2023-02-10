@@ -71,10 +71,14 @@ class genMovieLensDataset():
 
         self.best_arms = list(dict(sorted(self.w.items(), key=lambda x: x[1], reverse=True)).keys())[:seed_size]
 
-        means_05 = np.where(means>0.1)[0].tolist()
-        self.target_arms = random.sample(means_05, seed_size)
+        # means = means[means[:]>=0.05] ## 903 movies
 
-        # self.target_arms = list(dict(sorted(self.w.items(), key=lambda x: x[1], reverse=True)).keys())[seed_size:2*seed_size]
+        # self.target_arms = random.sample(means_05, seed_size)
+
+        self.target_arms_set = list(dict(sorted(self.w.items(), key=lambda x: x[1], reverse=True)).keys())[seed_size:2*seed_size]
+        self.target_arm = list(dict(sorted(self.w.items(), key=lambda x: x[1], reverse=True)).keys())[seed_size]
+
+        self.w[-10000] = 0
 
         self.click_prob = 1
         for i in self.best_arms:
