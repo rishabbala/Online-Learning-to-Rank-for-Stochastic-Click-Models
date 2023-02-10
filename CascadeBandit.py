@@ -10,6 +10,7 @@ from CascadeConf import *
 from datasets.genCasDataset import genCasDataset
 from datasets.genMovieLensDataset import genMovieLensDataset
 from BanditAlg.casUCB1 import CascadeUCB1
+from BanditAlg.TopRank import TopRank
 from BanditAlg.casUCB1_Attack import CascadeUCB1_Attack
 import argparse
 
@@ -36,7 +37,7 @@ class simulateOnlineData:
             
             for alg_name, alg in list(algorithms.items()): 
                 S = alg.decide()
-                regret = alg.click_prob - self.dataset.click_prob
+                # regret = alg.click_prob - self.dataset.click_prob
 
                 C = -1
                 for i in range(len(S)):
@@ -48,7 +49,7 @@ class simulateOnlineData:
 
                 alg.updateParameters(C, S)
 
-                self.AlgRegret[alg_name].append(regret)
+                # self.AlgRegret[alg_name].append(regret)
 
             self.resultRecord(iter_)
 
@@ -194,8 +195,11 @@ if __name__ == '__main__':
 
     algorithms = {}
     # print(dataset)
-    algorithms['CascadeUCB1-Attack'] = CascadeUCB1_Attack(data, data.num_arms, seed_size, target_arms)
+    # algorithms['CascadeUCB1-Attack'] = CascadeUCB1_Attack(data, data.num_arms, seed_size, target_arms)
 
-    algorithms['CascadeUCB1'] = CascadeUCB1(data, data.num_arms, seed_size, target_arms)
+    # algorithms['CascadeUCB1'] = CascadeUCB1(data, data.num_arms, seed_size, target_arms)
+
+    algorithms['TopRank_Attack'] = TopRank(data, data.num_arms, seed_size, target_arms, iterations)
+	
     
     simExperiment.runAlgorithms(algorithms)

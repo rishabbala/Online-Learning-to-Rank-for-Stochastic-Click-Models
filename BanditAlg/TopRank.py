@@ -64,9 +64,13 @@ class TopRank():
 	def updateParameters(self, C, best_arms):
 
 		clicks = np.zeros(self.num_arms)
-		if len(C) > 0:
-			for i in range(len(C)):
-				clicks[self.best_arms[C[i]]] = 1 
+		# list C for pbm model
+		if type(C).__name__ == 'list':
+			if len(C) > 0:
+				for i in range(len(C)):
+					clicks[self.best_arms[C[i]]] = 1
+		elif C != -1: 
+			clicks[self.best_arms[C]] = 1
 		
 		# print("clicks:",clicks)
 
