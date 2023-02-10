@@ -11,6 +11,7 @@ from datasets.genPBMdataset import genPBMdataset
 from datasets.genMovieLensDataset import genMovieLensDataset
 from BanditAlg.pbmUCB import PbmUCB
 from BanditAlg.pbmUCB_Attack import PbmUCB_Attack
+from BanditAlg.TopRankATQ import TopRankATQ
 from BanditAlg.casUCB1 import CascadeUCB1
 from BanditAlg.casUCB1_Attack import CascadeUCB1_Attack
 from BanditAlg.BatchRank import BatchRank
@@ -215,9 +216,10 @@ if __name__ == '__main__':
 	# algorithms['CascadeUCB1Attack'] = CascadeUCB1_Attack(data, data.num_arms, seed_size, target_arms)
 
 	# algorithms['pbmUCB'] = PbmUCB(data, data.num_arms, seed_size, target_arms)
-	algorithms['pbmUCBAttack'] = PbmUCB_Attack(data, data.num_arms, seed_size, target_arms)
+	# algorithms['pbmUCBAttack'] = PbmUCB_Attack(data, data.num_arms, seed_size, target_arms)
 
 	# algorithms['TopRank_Attack'] = TopRank(data, data.num_arms, seed_size, target_arms, iterations)
 	
+	algorithms['TopRank_ATQ_Attack'] = TopRankATQ(data, data.num_arms, seed_size, target_arms, iterations)
 
 	simExperiment.runAlgorithms(algorithms)

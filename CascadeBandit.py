@@ -11,6 +11,7 @@ from datasets.genCasDataset import genCasDataset
 from datasets.genMovieLensDataset import genMovieLensDataset
 from BanditAlg.casUCB1 import CascadeUCB1
 from BanditAlg.TopRank import TopRank
+from BanditAlg.TopRankATQ import TopRankATQ
 from BanditAlg.casUCB1_Attack import CascadeUCB1_Attack
 import argparse
 
@@ -199,7 +200,9 @@ if __name__ == '__main__':
 
     # algorithms['CascadeUCB1'] = CascadeUCB1(data, data.num_arms, seed_size, target_arms)
 
-    algorithms['TopRank_Attack'] = TopRank(data, data.num_arms, seed_size, target_arms, iterations)
+    # algorithms['TopRank_Attack'] = TopRank(data, data.num_arms, seed_size, target_arms, iterations)
+
+    algorithms['TopRank_ATQ_Attack'] = TopRankATQ(data, data.num_arms, seed_size, target_arms, iterations)
 	
     
     simExperiment.runAlgorithms(algorithms)
