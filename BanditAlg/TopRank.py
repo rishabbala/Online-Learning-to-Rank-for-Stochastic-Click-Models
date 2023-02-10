@@ -61,15 +61,7 @@ class TopRank():
 		return S >= np.sqrt(2 * N * np.log(c * np.sqrt(self.iterations) * np.sqrt(N)))
 
 
-	def updateParameters(self, best_arms, C):
-
-		# if self.dataset.target in self.best_arms:
-		# 	print("C:",C)
-		# 	print("SB:",self.best_arms)
-		# 	print("ST:",self.target_arms)
-
-		# print("C", C)
-		# print("SB",self.best_arms)
+	def updateParameters(self, C, best_arms):
 
 		clicks = np.zeros(self.num_arms)
 		if len(C) > 0:

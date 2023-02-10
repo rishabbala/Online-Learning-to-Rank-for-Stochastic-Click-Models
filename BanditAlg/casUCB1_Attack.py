@@ -101,7 +101,8 @@ class CascadeUCB1_Attack():
 		num_targetarm_played = 0
 
 		# print("SB", self.best_arms)
-		# print("ST", self.dataset.target_arms)
+		print("ST", self.dataset.target_arms)
+		exit()
 
 		# if self.cost[-1] == 0 and self.best_arms[0] == self.dataset.target:
 			# num_targetarm_played += 1

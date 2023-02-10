@@ -34,7 +34,7 @@ class PbmUCB_Attack():
 				self.U[i] = float('inf')
 			else:
 				self.U[i] = self.S[i]/self.N_tilde[i] + np.sqrt(1.5*self.N[i]/self.N_tilde[i]) * np.sqrt(1.5*np.log(self.t)/self.N_tilde[i])
-			# 	self.U[i] = min(1, max(self.U[i], 0))
+				self.U[i] = min(1, max(self.U[i], 0))
 
 		
 
@@ -67,18 +67,16 @@ class PbmUCB_Attack():
 		return best_arms
 	
 	def updateParameters(self, C,best_arms):
-		if type(C).__name__ == 'list':
-			for i in range(self.seed_size):
-				arm = self.best_arms[i]
-				self.N[arm] += 1
-				self.N_tilde[arm] += self.beta[i]
-				if arm in C:
-					self.S[arm] += 1
-		else:
-			for i in range(self.seed_size):
-				arm = self.best_arms[i]
-				self.N[arm] += 1
-				self.N_tilde[arm] += self.beta[i]
+		# print("SB",self.best_arms)
+		# print("ST",self.target_arms)
+		# print("C",C)
+		for i in range(self.seed_size):
+			arm = self.best_arms[i]
+			self.N[arm] += 1
+			self.N_tilde[arm] += self.beta[i]
+			if i in C:
+				self.S[arm] += 1
+
 		
 		self.t += 1
 
