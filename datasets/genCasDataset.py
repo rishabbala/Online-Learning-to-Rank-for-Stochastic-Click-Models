@@ -11,8 +11,8 @@ class genCasDataset():
             self.w[i] = random.uniform(0.25, 1)
 
         self.best_arms = sorted(self.w, key=lambda x: self.w[x], reverse=True)[:seed_size]
-        self.target_arms_set = sorted(self.w, key=lambda x: self.w[x])[1:seed_size+1]
-        self.target_arm = sorted(self.w, key=lambda x: self.w[x])[seed_size]
+        self.target_arms_set = sorted(self.w, key=lambda x: self.w[x], reverse=True)[seed_size:2*seed_size]
+        self.target_arm = sorted(self.w, key=lambda x: self.w[x], reverse=True)[seed_size]
 
         self.click_prob = 1
         for i in self.best_arms:

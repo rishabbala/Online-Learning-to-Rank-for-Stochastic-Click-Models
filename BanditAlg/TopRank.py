@@ -2,7 +2,7 @@ from math import *
 import numpy as np
 import random
 import copy
-from BanditAlg.attack import generalAttack
+from BanditAlg.attack import generalAttack, AttackThenQuit
 
 
 class Partition:
@@ -13,18 +13,20 @@ class Partition:
 
 class TopRank():
 
-	def __init__(self, dataset, num_arms, seed_size, iterations, attack=True):
+	def __init__(self, dataset, num_arms, seed_size, iterations, attack):
 		self.dataset = dataset
 		self.num_arms = num_arms
 		self.seed_size = seed_size
 		self.iterations = iterations
-		self.attack_bool = attack
+		self.attack_type = attack
 
 		self.S = np.zeros((self.num_arms, self.num_arms)) # S[i,j] = \sum_t U(t,i,j)
 		self.N = np.zeros((self.num_arms, self.num_arms)) # N[i,j] = \sum_t |U(t,i,j)| = \sum_t |C(t,i) - C(t,j)| 1{i,j in the same partition}
 
 		self.G = np.zeros((self.num_arms, self.num_arms), dtype = bool) # G[i,j] = 1 iff i is better than j
 		self.partitions = {0:Partition(items=range(self.num_arms), k=0, m=self.seed_size)}
+
+		self.t = 1
 
 		self.totalCost = []
 		self.cost = []
@@ -33,24 +35,26 @@ class TopRank():
 
 
 	def decide(self):
-		self.best_arms = [0] * self.seed_size
+		self.best_arms = [-1 for _ in range(self.seed_size)]
 		for c in self.partitions:
 			partition = self.partitions[c]
 			partition.items = np.random.permutation(partition.items)
 			self.best_arms[partition.k:partition.k+partition.m] = partition.items[:partition.m]
 		
-		if self.attack_bool:
-			best_arms, cost = generalAttack(self.best_arms, self.dataset.target_arms_set, self.seed_size)
-		else:
-			best_arms = copy.deepcopy(self.best_arms)
-			cost = 0
+		best_arms = copy.deepcopy(self.best_arms)
+		cost = 0
 
-		if len(self.totalCost) == 0:
-			self.totalCost = [cost]
-		else:
-			self.totalCost.append(self.totalCost[-1] + cost)
-		self.cost.append(cost)
-		
+		if self.attack_type == 'general':
+			best_arms, cost = generalAttack(self.best_arms, self.dataset.target_arms_set, self.seed_size)
+
+			if len(self.totalCost) == 0:
+				self.totalCost = [cost]
+			else:
+				self.totalCost.append(self.totalCost[-1] + cost)
+			self.cost.append(cost)
+
+		# print(self.best_arms, best_arms, self.dataset.target_arms_set, self.dataset.target_arm)
+
 		return best_arms
 
 
@@ -59,7 +63,7 @@ class TopRank():
 		return S >= np.sqrt(2 * N * np.log(c * np.sqrt(self.iterations) * np.sqrt(N)))
 
 
-	def updateCascade(self, C):
+	def updateCascade(self, clicks):
 		# update S and N
 		for c in self.partitions:
 			partition = self.partitions[c]
@@ -67,11 +71,11 @@ class TopRank():
 				a = partition.items[i]
 				for j in range(i+1, len(partition.items)):
 					b = partition.items[j]
-					if (a in self.best_arms and self.best_arms.index(a) <= C) or (b in self.best_arms and self.best_arms.index(b) <= C):
+					if (a in self.best_arms and self.best_arms.index(a) <= clicks) or (b in self.best_arms and self.best_arms.index(b) <= clicks):
 						ca = cb = 0
-						if a in self.best_arms and C == self.best_arms.index(a):
+						if a in self.best_arms and clicks == self.best_arms.index(a):
 							ca = 1
-						if b in self.best_arms and C == self.best_arms.index(b):
+						if b in self.best_arms and clicks == self.best_arms.index(b):
 							cb = 1
 						x = ca - cb
 						self.S[a, b] += x
@@ -79,14 +83,50 @@ class TopRank():
 						self.S[b, a] -= x
 						self.N[b, a] += np.abs(x)
 
+	def updatePBM(self, clicks):
+		# update S and N
+		for c in self.partitions:
+			partition = self.partitions[c]
+			for i in range(partition.m):
+				a = partition.items[i]
+				for j in range(i+1, len(partition.items)):
+					b = partition.items[j]
+					ca = cb = 0
+					if a in clicks:
+						ca = 1
+					if b in clicks:
+						cb = 1
+					x = ca - cb
+					self.S[a, b] += x
+					self.N[a, b] += np.abs(x)
+					self.S[b, a] -= x
+					self.N[b, a] += np.abs(x)
 
-	def updateParameters(self, C):
 
-		if type(C).__name__ == 'list':
+	def updateParameters(self, clicks):
+
+		cost = 0
+		c = 3.43
+		delta = 1/self.iterations
+		T1 = np.ceil(4 * np.log(c/delta)/ (self.seed_size/self.num_arms + (1-np.sqrt(1+8*self.seed_size/self.num_arms))/4))
+
+
+		if self.attack_type == 'attack&quit' and self.t <= T1:
+			clicks, cost = AttackThenQuit(self.best_arms, self.num_arms, self.dataset.target_arm, self.seed_size, clicks)
+		
+		if len(self.cost) < self.t:
+			if len(self.totalCost) == 0:
+				self.totalCost = [cost]
+			else:
+				self.totalCost.append(self.totalCost[-1] + cost)
+			self.cost.append(cost)
+
+
+		if type(clicks).__name__ == 'list':
 			## PBMBandit
-			pass
+			self.updatePBM(clicks)
 		else:
-			self.updateCascade(C)
+			self.updateCascade(clicks)
 		
 		updateG = False
 		for c in self.partitions:
@@ -120,6 +160,7 @@ class TopRank():
 				c += 1
 
 		self.numTargetPlayed()
+		self.t += 1
 
 	
 	def numTargetPlayed(self):

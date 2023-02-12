@@ -10,4 +10,4 @@ save_address = "./SimulationResults/CascadeBandit"
 
 dataset = 'movielens-small'
 seed_size = 25
-iterations = 100000
+iterations = 200000

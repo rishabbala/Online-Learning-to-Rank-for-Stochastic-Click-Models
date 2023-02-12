@@ -7,12 +7,10 @@ import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 from PBMConf import *
-from datasets.genPBMdataset import genPBMdataset
+from datasets.genPBMdataset import genPBMDataset
 from datasets.genMovieLensDataset import genMovieLensDataset
-from BanditAlg.casUCB1 import CascadeUCB1
-from BanditAlg.casUCB1_Attack import CascadeUCB1_Attack
+from BanditAlg.PBMUCB import PBMUCB
 from BanditAlg.BatchRank import BatchRank
-from BanditAlg.BatchRankAttack import BatchRankAttack
 from BanditAlg.TopRank import TopRank
 import argparse
 
@@ -30,8 +28,8 @@ class simulateOnlineData:
 	def runAlgorithms(self, algorithms):
 		self.tim_ = []
 		# for alg_name, alg in list(algorithms.items()):
-			# self.AlgRegret[alg_name] = []
-			# self.BatchCumlateRegret[alg_name] = []
+		#     self.AlgRegret[alg_name] = []
+		#     self.BatchCumlateRegret[alg_name] = []
 
 		self.resultRecord()
 
@@ -39,26 +37,17 @@ class simulateOnlineData:
 			
 			for alg_name, alg in list(algorithms.items()): 
 				S = alg.decide()
-				# regret = alg.click_prob - self.dataset.click_prob
-				# print("C", regret)
+				C = []
 
-				w = sorted(self.dataset.total_prob, key=lambda x: self.dataset.total_prob[x], reverse=True)
-				# print("W", w)
-				print("S", S)
-				print(self.dataset.target_arms)
+				# print(alg_name, S, self.dataset.target_arm)
 
-				click = []
 				for i in range(len(S)):
 					arm = S[i]
-					total_click_prob = self.dataset.total_prob[arm]
-					if total_click_prob >= random.uniform(0, 1):
-						click.append(i)
-						# break
+					if self.dataset.w[arm] * self.dataset.examination_prob[i] >= random.uniform(0, 1):
+						C.append(arm)
 
-				alg.updateParameters(S, click)
-
+				alg.updateParameters(C)
 				# self.AlgRegret[alg_name].append(regret)
-
 			self.resultRecord(iter_)
 
 		self.showResult()
@@ -74,13 +63,13 @@ class simulateOnlineData:
 			if not os.path.exists(save_address):
 				os.mkdir(save_address)
 
-			if os.path.exists(self.filenameWriteCost) or os.path.exists(self.filenameTargetRate):
+			if os.path.exists(self.filenameWriteCost) or os.path.exists(self.filenameTargetRate): # or os.path.exists(self.filenameWriteRegret):
 				raise ValueError ("Save File exists already, please check experiment number")
 
 			# with open(self.filenameWriteRegret, 'w') as f:
-			# 	f.write('Time(Iteration)')
-			# 	f.write(',' + ','.join( [str(alg_name) for alg_name in algorithms.keys()]))
-			# 	f.write('\n') 
+			#     f.write('Time(Iteration)')
+			#     f.write(',' + ','.join( [str(alg_name) for alg_name in algorithms.keys()]))
+			#     f.write('\n') 
 
 			with open(self.filenameWriteCost, 'w') as f:
 				f.write('Time(Iteration)')
@@ -104,11 +93,11 @@ class simulateOnlineData:
 			print("Iteration %d" % iter_, " Elapsed time", datetime.datetime.now() - self.startTime)
 			self.tim_.append(iter_)
 			# for alg_name in algorithms.keys():
-			# 	# self.BatchCumlateRegret[alg_name].append(sum(self.AlgRegret[alg_name]))
+			#     self.BatchCumlateRegret[alg_name].append(sum(self.AlgRegret[alg_name]))
 			# with open(self.filenameWriteRegret, 'a+') as f:
-			# 	f.write(str(iter_))
-			# 	f.write(',' + ','.join([str(self.BatchCumlateRegret[alg_name][-1]) for alg_name in algorithms.keys()]))
-			# 	f.write('\n')
+			#     f.write(str(iter_))
+			#     f.write(',' + ','.join([str(self.BatchCumlateRegret[alg_name][-1]) for alg_name in algorithms.keys()]))
+			#     f.write('\n')
 
 			with open(self.filenameWriteCost, 'a+') as f:
 				f.write(str(iter_))
@@ -135,13 +124,13 @@ class simulateOnlineData:
 		# # regret
 		# f, axa = plt.subplots(1, sharex=True)
 		# for alg_name in algorithms.keys():  
-		# 	axa.plot(self.tim_, self.BatchCumlateRegret[alg_name],label = alg_name)
-		# 	print('%s: %.2f' % (alg_name, np.mean(self.BatchCumlateRegret[alg_name])))
+		#     axa.plot(self.tim_, self.BatchCumlateRegret[alg_name],label = alg_name)
+		#     print('%s: %.2f' % (alg_name, np.mean(self.BatchCumlateRegret[alg_name])))
 		# axa.legend(loc='upper left',prop={'size':9})
 		# axa.set_xlabel("Iteration")
 		# axa.set_ylabel("Regret")
 		# axa.set_title("Average Regret")
-		# plt.savefig('./SimulationResults/PBMBandit/AvgRegret' + str(args.exp_num)+'.png')
+		# plt.savefig(save_address + '/AvgRegret' + str(args.exp_num)+'.png')
 		# plt.show()
 
 		# plot cost
@@ -153,7 +142,7 @@ class simulateOnlineData:
 		axa.set_xlabel("Iteration")
 		axa.set_ylabel("Cost")
 		axa.set_title("Cost")
-		plt.savefig('./SimulationResults/PBMBandit/Cost' + str(args.exp_num)+'.png')
+		plt.savefig(save_address + '/Cost' + str(args.exp_num)+'.png')
 		plt.show()
 
 		# plot cumulative cost
@@ -165,7 +154,7 @@ class simulateOnlineData:
 		axa.set_xlabel("Iteration")
 		axa.set_ylabel("Cost")
 		axa.set_title("Total Cost")
-		plt.savefig('./SimulationResults/PBMBandit/TotalCost' + str(args.exp_num)+'.png')
+		plt.savefig(save_address + '/TotalCost' + str(args.exp_num)+'.png')
 		plt.show()
 
 		# plot superarm played
@@ -177,7 +166,7 @@ class simulateOnlineData:
 		axa.set_xlabel("Iteration")
 		axa.set_ylabel("Count")
 		axa.set_title("Number of times target arm is played")
-		plt.savefig('./SimulationResults/PBMBandit/TargetarmPlayed' + str(args.exp_num)+'.png')
+		plt.savefig(save_address + '/TargetarmPlayed' + str(args.exp_num)+'.png')
 		plt.show()
 
 
@@ -189,30 +178,24 @@ if __name__ == '__main__':
 
 	args = parser.parse_args()
 
-	random.seed(args.exp_num)
-
-	if dataset == 'synthetic':
-		data = genPBMdataset(num_arms, seed_size)
+	if 'synthetic' in dataset:
+		data = genPBMDataset(num_arms, seed_size)
 	
 	else:
-		if dataset == 'movielens-small':
+		if 'movielens-small' in dataset:
 			data = genMovieLensDataset('./datasets/movielens/ml-latest-small/ratings.csv', seed_size, args.exp_num)
 
 	simExperiment = simulateOnlineData(data, seed_size, iterations)
 
-	target_arms = data.target_arms[:-1]
-
-	# target_arms = random.sample(range(data.num_arms), seed_size)
+	target_arms_set = data.target_arms_set
 
 	algorithms = {}
-
-	# algorithms['BatchRank'] = BatchRank(data, data.num_arms, seed_size, target_arms, iterations)
-	algorithms['BatchRankAttack'] = BatchRankAttack(data, data.num_arms, seed_size, target_arms, iterations)
-
-	# algorithms['CascadeUCB1'] = CascadeUCB1(data, data.num_arms, seed_size, target_arms)
-	# algorithms['CascadeUCB1Attack'] = CascadeUCB1_Attack(data, data.num_arms, seed_size, target_arms)
-
-	# algorithms['TopRank_Attack'] = TopRank(data, data.num_arms, seed_size, target_arms, iterations)
 	
+	algorithms['PBMUCB-Attack'] = PBMUCB(data, data.num_arms, seed_size, attack='general')
+	algorithms['BatchRank-Attack'] = BatchRank(data, data.num_arms, seed_size, iterations, attack='general')
+	algorithms['TopRank-Attack'] = TopRank(data, data.num_arms, seed_size, iterations, attack='general')
+
+	algorithms['BatchRank-AttackThenQuit'] = BatchRank(data, data.num_arms, seed_size, iterations, attack='attack&quit')
+	algorithms['TopRank-AttackThenQuit'] = TopRank(data, data.num_arms, seed_size, iterations, attack='attack&quit')
 
 	simExperiment.runAlgorithms(algorithms)

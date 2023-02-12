@@ -7,7 +7,7 @@ import argparse
 
 # SMALL_SIZE = 18
 # MEDIUM_SIZE = 15
-BIGGER_SIZE = 20
+BIGGER_SIZE = 12
 
 plt.rc('axes', titlesize=BIGGER_SIZE)     # fontsize of the title
 plt.rc('axes', labelsize=BIGGER_SIZE)    # fontsize of the x and y labels
@@ -46,7 +46,7 @@ if args.exp_type == 'Rate':
 exp_num = 0
 
 while os.path.exists(os.path.join('./SimulationResults', args.exp_name, args.exp_type + str(exp_num) + '.csv')):
-    data = pd.read_csv(os.path.join('./SimulationResults', args.exp_name, args.exp_type + str(exp_num) + '.csv')).iloc[:1000, :]
+    data = pd.read_csv(os.path.join('./SimulationResults', args.exp_name, args.exp_type + str(exp_num) + '.csv'))#.iloc[:180000, :]
     exp.append(data)
     exp_num += 1
 
@@ -56,10 +56,15 @@ cols = df.columns.tolist()
 cols = cols[::-1]
 df = df[cols]
 
-print(df)
-
+grouped_df_min = df.groupby(["Time(Iteration)"]).min()
+grouped_df_max = df.groupby(["Time(Iteration)"]).max()
 grouped_df_mean = df.groupby(["Time(Iteration)"]).mean()
 grouped_df_std = df.groupby(["Time(Iteration)"]).std()
+
+
+# print(grouped_df_min)
+# # print(grouped_df_max)
+# exit()
 
 quant_num = 0.3
 grouped_df_quantile_min = df.groupby(["Time(Iteration)"]).quantile(quant_num)
@@ -85,6 +90,7 @@ plt.xlabel('Iterations')
 plt.ylabel(y_label)
 plt.legend(loc="upper left")
 plt.title(title)
+plt.grid()
 
 t = ax.yaxis.get_offset_text()
 t.set_x(-0.05)

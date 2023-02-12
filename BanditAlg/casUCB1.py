@@ -32,7 +32,7 @@ class CascadeUCB1():
 			if self.T[i] == 0:
 				self.U[i] = float('inf')
 			else:
-				self.U[i] = self.w_hat[i] + 0.1*np.sqrt(1.5*np.log(self.t)/self.T[i])
+				self.U[i] = self.w_hat[i] + np.sqrt(1.5*np.log(self.t)/self.T[i])
 				self.U[i] = min(1, max(self.U[i], 0))
 		
 		self.best_arms = list(dict(sorted(self.U.items(), key=lambda x: x[1], reverse=True)).keys())[:self.seed_size]
@@ -55,37 +55,35 @@ class CascadeUCB1():
 
 	
 	def updateParameters(self, C):
-		# if type(C).__name__ == 'list':
-		# 	for i in range(self.seed_size):
-		# 		arm = self.best_arms[i]
-		# 		r = self.T[arm]*self.w_hat[arm]
-		# 		if i in C:
-		# 			r += 1
-		# 		self.w_hat[arm] = r/(self.T[arm]+1)
-
-		# 		self.T[arm] += 1
-
-		# else:
-
-		if C == -1:
-			C = self.num_arms
-
-		for i in range(self.seed_size):
-			if i <= C:
+		if type(C).__name__ == 'list':
+			## PBMBandit
+			for i in range(self.seed_size):
 				arm = self.best_arms[i]
-				
 				r = self.T[arm]*self.w_hat[arm]
-				if i == C:
+				if arm in C:
 					r += 1
 				self.w_hat[arm] = r/(self.T[arm]+1)
-
 				self.T[arm] += 1
-			
-			else:
-				break
+
+		else:
+			## CascadeBandit
+			if C == -1:
+				C = self.num_arms
+
+			for i in range(self.seed_size):
+				if i <= C:
+					arm = self.best_arms[i]
+					
+					r = self.T[arm]*self.w_hat[arm]
+					if i == C:
+						r += 1
+					self.w_hat[arm] = r/(self.T[arm]+1)
+					self.T[arm] += 1
+				
+				else:
+					break
 
 		self.t += 1
-
 		self.numTargetPlayed()
 
 	
