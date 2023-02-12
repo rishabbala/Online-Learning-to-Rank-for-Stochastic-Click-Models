@@ -46,7 +46,7 @@ if args.exp_type == 'Rate':
 exp_num = 0
 
 while os.path.exists(os.path.join('./SimulationResults', args.exp_name, args.exp_type + str(exp_num) + '.csv')):
-    data = pd.read_csv(os.path.join('./SimulationResults', args.exp_name, args.exp_type + str(exp_num) + '.csv'))#.iloc[:180000, :]
+    data = pd.read_csv(os.path.join('./SimulationResults', args.exp_name, args.exp_type + str(exp_num) + '.csv')).iloc[:80000, :]
     exp.append(data)
     exp_num += 1
 

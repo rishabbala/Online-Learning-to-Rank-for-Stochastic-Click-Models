@@ -38,6 +38,7 @@ class TopRank():
 		self.best_arms = [-1 for _ in range(self.seed_size)]
 		for c in self.partitions:
 			partition = self.partitions[c]
+			# print(partition.k, partition.m)
 			partition.items = np.random.permutation(partition.items)
 			self.best_arms[partition.k:partition.k+partition.m] = partition.items[:partition.m]
 		
@@ -60,7 +61,7 @@ class TopRank():
 
 	def _criterion(self, S, N):
 		c = 3.4367
-		return S >= np.sqrt(2 * N * np.log(c * np.sqrt(self.iterations) * np.sqrt(N)))
+		return S >= 0.75*np.sqrt(2 * N * np.log(c * np.sqrt(self.iterations) * np.sqrt(N)))
 
 
 	def updateCascade(self, clicks):

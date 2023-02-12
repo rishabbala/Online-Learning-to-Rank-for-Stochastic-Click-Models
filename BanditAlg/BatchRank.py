@@ -135,7 +135,7 @@ class BatchRank():
 		# print("BBnda", l_bnd, u_bnd, self.c[b,l,d], nl, l)
 
 		while (u_bnd-l_bnd) > 10**-3:
-			if nl * self.KL_Div(c_prob, (u_bnd+l_bnd)/2) > np.log(self.iterations) + 3 * np.log(np.log(self.iterations)):
+			if nl * self.KL_Div(c_prob, (u_bnd+l_bnd)/2) > np.log(self.iterations) + 0 * np.log(np.log(self.iterations)):
 				u_bnd = (u_bnd+l_bnd)/2
 			else:
 				l_bnd = (u_bnd+l_bnd)/2
@@ -154,7 +154,7 @@ class BatchRank():
 		u_bnd = c_prob
 
 		while (u_bnd-l_bnd) > 10**-3:
-			if nl * self.KL_Div(c_prob, (u_bnd+l_bnd)/2) > np.log(self.iterations) + 3 * np.log(np.log(self.iterations)):
+			if nl * self.KL_Div(c_prob, (u_bnd+l_bnd)/2) > np.log(self.iterations) + 0 * np.log(np.log(self.iterations)):
 				l_bnd = (u_bnd+l_bnd)/2
 			else:
 				u_bnd = (u_bnd+l_bnd)/2
@@ -239,7 +239,7 @@ class BatchRank():
 
 		# print(self.I)
 		# print(self.B)
-		# print(self.l)
+		# # print(self.l)
 		# exit()
 
 
