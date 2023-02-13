@@ -46,7 +46,7 @@ if args.exp_type == 'Rate':
 exp_num = 0
 
 while os.path.exists(os.path.join('./SimulationResults', args.exp_name, args.exp_type + str(exp_num) + '.csv')):
-    data = pd.read_csv(os.path.join('./SimulationResults', args.exp_name, args.exp_type + str(exp_num) + '.csv')).iloc[:80000, :]
+    data = pd.read_csv(os.path.join('./SimulationResults', args.exp_name, args.exp_type + str(exp_num) + '.csv'))#.iloc[:40000, :]
     exp.append(data)
     exp_num += 1
 
@@ -60,11 +60,6 @@ grouped_df_min = df.groupby(["Time(Iteration)"]).min()
 grouped_df_max = df.groupby(["Time(Iteration)"]).max()
 grouped_df_mean = df.groupby(["Time(Iteration)"]).mean()
 grouped_df_std = df.groupby(["Time(Iteration)"]).std()
-
-
-# print(grouped_df_min)
-# # print(grouped_df_max)
-# exit()
 
 quant_num = 0.3
 grouped_df_quantile_min = df.groupby(["Time(Iteration)"]).quantile(quant_num)

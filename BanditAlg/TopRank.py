@@ -61,7 +61,7 @@ class TopRank():
 
 	def _criterion(self, S, N):
 		c = 3.4367
-		return S >= 0.75*np.sqrt(2 * N * np.log(c * np.sqrt(self.iterations) * np.sqrt(N)))
+		return S >= np.sqrt(2 * N * np.log(c * np.sqrt(self.iterations) * np.sqrt(N)))
 
 
 	def updateCascade(self, clicks):
