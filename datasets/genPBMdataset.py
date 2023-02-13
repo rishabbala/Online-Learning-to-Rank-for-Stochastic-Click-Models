@@ -1,28 +1,21 @@
 import random
 
 
-class genPBMdataset():
+class genPBMDataset():
 
     def __init__(self, num_arms, seed_size):
         self.w = {-10000: 0}
-        self.x = {-10000: 0}
-
-        self.total_prob = {}
 
         self.num_arms = num_arms
         for i in range(num_arms):
-            self.w[i] = random.uniform(0.25, 1) ## click prob
-            self.x[i] = random.uniform(0.25, 1) ## examination prob
-            # self.x[i] = 1/(i+1+random.uniform(0, 0.01))
+            self.w[i] = random.uniform(0.25, 1)
 
-            self.total_prob[i] = self.w[i]*self.x[i]
+        self.best_arms = sorted(self.w, key=lambda x: self.w[x], reverse=True)[:seed_size]
+        self.target_arms_set = sorted(self.w, key=lambda x: self.w[x], reverse=True)[seed_size:2*seed_size]
+        self.target_arm = sorted(self.w, key=lambda x: self.w[x], reverse=True)[seed_size]
 
-        self.best_arms = sorted(self.total_prob, key=lambda x: self.total_prob[x], reverse=True)[:seed_size]
-        self.target = sorted(self.total_prob, key=lambda x: self.total_prob[x])[seed_size-1]
-        self.target_arms = sorted(self.total_prob, key=lambda x: self.total_prob[x])[:seed_size][::-1]
+        self.examination_prob = [1/(i+1) for i in range(seed_size)]
 
         self.click_prob = 1
         for i in self.best_arms:
-            self.click_prob *= (1 - self.total_prob[i])
-
-        self.total_prob[-10000] = 0
+            self.click_prob *= (1 - self.w[i])

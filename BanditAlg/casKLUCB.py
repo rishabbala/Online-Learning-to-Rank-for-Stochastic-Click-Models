@@ -1,12 +1,10 @@
 from math import *
 import numpy as np
 import random
-import copy
 from BanditAlg.attack import generalAttack
 
 
-
-class CascadeUCB1():
+class CascadeKLUCB():
 
 	def __init__(self, dataset, num_arms, seed_size, attack=True):
 		self.dataset = dataset
@@ -28,11 +26,24 @@ class CascadeUCB1():
 
 
 	def decide(self):
+
+		d = lambda p, q: p*np.log(1e-10 + p/q) + (1-p)*np.log(1e-10 + (1-p)/(1-q))
+		f = lambda t: t*((np.log(t))**3)
+
 		for i in range(self.num_arms):
+			l = self.w_hat[i]
+			u = 1
+
 			if self.T[i] == 0:
 				self.U[i] = float('inf')
 			else:
-				self.U[i] = self.w_hat[i] + np.sqrt(1.5*np.log(self.t)/self.T[i])
+				while (u-l) > 10**-3:
+					if d(self.w_hat[i], (u+l)/2) > np.log(f(self.t))/self.T[i]:
+						u = (u+l)/2
+					else:
+						l = (u+l)/2
+
+				self.U[i] = u
 				self.U[i] = min(1, max(self.U[i], 0))
 		
 		self.best_arms = list(dict(sorted(self.U.items(), key=lambda x: x[1], reverse=True)).keys())[:self.seed_size]
@@ -41,7 +52,7 @@ class CascadeUCB1():
 			best_arms, cost = generalAttack(self.best_arms, self.dataset.target_arms_set, self.seed_size)
 		else:
 			best_arms = copy.deepcopy(self.best_arms)
-			cost = 0
+			cost = 0	
 
 		if len(self.totalCost) == 0:
 			self.totalCost = [cost]
@@ -49,12 +60,11 @@ class CascadeUCB1():
 			self.totalCost.append(self.totalCost[-1] + cost)
 		self.cost.append(cost)
 
-		# print(self.best_arms, best_arms, self.dataset.target_arms_set, self.dataset.target_arm)
-
 		return best_arms
 
 	
 	def updateParameters(self, C):
+
 		if type(C).__name__ == 'list':
 			## PBMBandit
 			for i in range(self.seed_size):
@@ -86,11 +96,28 @@ class CascadeUCB1():
 		self.t += 1
 		self.numTargetPlayed()
 
+<<<<<<< HEAD:BanditAlg/casUCB1_Attack.py
 	
+	def numTargetPlayed(self):
+		num_basearm_played = 0
+		num_targetarm_played = 0
+
+		# print("SB", self.best_arms)
+		print("ST", self.dataset.target_arms)
+		exit()
+
+		# if self.cost[-1] == 0 and self.best_arms[0] == self.dataset.target:
+			# num_targetarm_played += 1
+
+		if self.best_arms[0] == self.dataset.target:
+			num_targetarm_played += 1
+=======
+
 	def numTargetPlayed(self):
 		n = 0
 		if self.best_arms[0] == self.dataset.target_arm:
 			n = 1
+>>>>>>> master:BanditAlg/casKLUCB.py
 
 		if len(self.num_targetarm_played) == 0:
 			self.num_targetarm_played.append(n)

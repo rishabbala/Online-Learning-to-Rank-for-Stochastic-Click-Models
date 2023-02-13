@@ -1,13 +1,13 @@
 import os
 
 
-save_address = "./SimulationResults/CascadeBanditRandom"
+save_address = "./SimulationResults/CascadeBandit_syn"
 
 dataset = 'synthetic'
-num_arms = 100
+num_arms = 30
 seed_size = 5
-iterations = 50000
+iterations = 300000
 
 # dataset = 'movielens-small'
 # seed_size = 25
-# iterations = 100000
+# iterations = 200000
