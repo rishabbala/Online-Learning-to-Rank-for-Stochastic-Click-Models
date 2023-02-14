@@ -96,28 +96,11 @@ class CascadeKLUCB():
 		self.t += 1
 		self.numTargetPlayed()
 
-<<<<<<< HEAD:BanditAlg/casUCB1_Attack.py
-	
-	def numTargetPlayed(self):
-		num_basearm_played = 0
-		num_targetarm_played = 0
-
-		# print("SB", self.best_arms)
-		print("ST", self.dataset.target_arms)
-		exit()
-
-		# if self.cost[-1] == 0 and self.best_arms[0] == self.dataset.target:
-			# num_targetarm_played += 1
-
-		if self.best_arms[0] == self.dataset.target:
-			num_targetarm_played += 1
-=======
 
 	def numTargetPlayed(self):
 		n = 0
 		if self.best_arms[0] == self.dataset.target_arm:
 			n = 1
->>>>>>> master:BanditAlg/casKLUCB.py
 
 		if len(self.num_targetarm_played) == 0:
 			self.num_targetarm_played.append(n)

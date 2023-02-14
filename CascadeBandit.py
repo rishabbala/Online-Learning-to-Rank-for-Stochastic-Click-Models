@@ -141,7 +141,7 @@ class simulateOnlineData:
         axa.set_xlabel("Iteration")
         axa.set_ylabel("Cost")
         axa.set_title("Cost")
-        plt.savefig('./SimulationResults/CascadeBandit/Cost' + str(args.exp_num)+'.png')
+        plt.savefig(save_address + '/Cost' + str(args.exp_num)+'.png')
         plt.show()
 
         # plot cumulative cost
@@ -153,7 +153,7 @@ class simulateOnlineData:
         axa.set_xlabel("Iteration")
         axa.set_ylabel("Cost")
         axa.set_title("Total Cost")
-        plt.savefig('./SimulationResults/CascadeBandit/TotalCost' + str(args.exp_num)+'.png')
+        plt.savefig(save_address + '/TotalCost' + str(args.exp_num)+'.png')
         plt.show()
 
         # plot superarm played
@@ -165,7 +165,7 @@ class simulateOnlineData:
         axa.set_xlabel("Iteration")
         axa.set_ylabel("Count")
         axa.set_title("Number of times target arm is played")
-        plt.savefig('./SimulationResults/CascadeBandit/TargetarmPlayed' + str(args.exp_num)+'.png')
+        plt.savefig(save_address + '/TargetarmPlayed' + str(args.exp_num)+'.png')
         plt.show()
 
 

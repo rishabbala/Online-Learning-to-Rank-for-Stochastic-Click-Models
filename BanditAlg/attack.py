@@ -24,12 +24,12 @@ def AttackThenQuit(best_arms, num_arms, target_arm, seed_size, clicks):
 		if target_arm in best_arms:
 			C = [target_arm]
 
-			# if best_arms.index(target_arm) not in clicks:
-			# 	cost = len(clicks) + 1
-			# 	C = [target_arm]
-			# else:
-			# 	C = [target_arm]
-			# 	cost = len(clicks) - 1
+			if best_arms.index(target_arm) not in clicks:
+				cost = len(clicks) + 1
+				# C = [target_arm]
+			else:
+				# C = [target_arm]
+				cost = len(clicks) - 1
 		else:
 			# cost = len(clicks)
 			C = []
