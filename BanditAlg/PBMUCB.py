@@ -69,6 +69,9 @@ class PBMUCB():
 	
 	def numTargetPlayed(self):
 		n = 0
+		# print("SB",self.best_arms)
+		# print("ST",self.dataset.target_arms_set)
+
 		if self.best_arms[0] == self.dataset.target_arm:
 			n = 1
 
