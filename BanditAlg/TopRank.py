@@ -72,17 +72,11 @@ class TopRank():
 				a = partition.items[i]
 				for j in range(i+1, len(partition.items)):
 					b = partition.items[j]
-					if (a in self.best_arms and self.best_arms.index(a) <= clicks) or (b in self.best_arms and self.best_arms.index(b) <= clicks):
-						ca = cb = 0
-						if a in self.best_arms and clicks == self.best_arms.index(a):
-							ca = 1
-						if b in self.best_arms and clicks == self.best_arms.index(b):
-							cb = 1
-						x = ca - cb
-						self.S[a, b] += x
-						self.N[a, b] += np.abs(x)
-						self.S[b, a] -= x
-						self.N[b, a] += np.abs(x)
+					x = clicks[a] - clicks[b]
+					self.S[a, b] += x
+					self.N[a, b] += np.abs(x)
+					self.S[b, a] -= x
+					self.N[b, a] += np.abs(x)
 
 	def updatePBM(self, clicks):
 		# update S and N
@@ -127,7 +121,11 @@ class TopRank():
 			## PBMBandit
 			self.updatePBM(clicks)
 		else:
-			self.updateCascade(clicks)
+			## CascadeBandit
+			C = np.zeros(self.num_arms)
+			if clicks != -1:
+				C[self.best_arms[clicks]] = 1
+			self.updateCascade(C)
 		
 		updateG = False
 		for c in self.partitions:
