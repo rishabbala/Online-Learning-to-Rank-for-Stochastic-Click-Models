@@ -65,33 +65,21 @@ class CascadeKLUCB():
 	
 	def updateParameters(self, C):
 
-		if type(C).__name__ == 'list':
-			## PBMBandit
-			for i in range(self.seed_size):
+		if C == -1:
+			C = self.num_arms
+
+		for i in range(self.seed_size):
+			if i <= C:
 				arm = self.best_arms[i]
+				
 				r = self.T[arm]*self.w_hat[arm]
-				if arm in C:
+				if i == C:
 					r += 1
 				self.w_hat[arm] = r/(self.T[arm]+1)
 				self.T[arm] += 1
-
-		else:
-			## CascadeBandit
-			if C == -1:
-				C = self.num_arms
-
-			for i in range(self.seed_size):
-				if i <= C:
-					arm = self.best_arms[i]
-					
-					r = self.T[arm]*self.w_hat[arm]
-					if i == C:
-						r += 1
-					self.w_hat[arm] = r/(self.T[arm]+1)
-					self.T[arm] += 1
-				
-				else:
-					break
+			
+			else:
+				break
 
 		self.t += 1
 		self.numTargetPlayed()

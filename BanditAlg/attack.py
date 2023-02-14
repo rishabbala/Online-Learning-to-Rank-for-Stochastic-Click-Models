@@ -10,7 +10,7 @@ def generalAttack(arms, target_arms_set, seed_size):
 	if len(list(set(target_arms_set).difference(set(best_arms)))) > 0:
 		for i in range(seed_size):
 			if best_arms[i] not in target_arms_set:
-				cost = 1
+				cost += 1
 				best_arms[i] = -10000
 
 	return best_arms, cost
@@ -18,26 +18,35 @@ def generalAttack(arms, target_arms_set, seed_size):
 
 def AttackThenQuit(best_arms, num_arms, target_arm, seed_size, clicks):
 	# best_arms = arms.tolist()
-	cost = 1
 
 	if type(clicks).__name__ == 'list':
+		cost = 0
 		if target_arm in best_arms:
-			C = [target_arm]
-
-			if best_arms.index(target_arm) not in clicks:
+			if target_arm not in clicks:
 				cost = len(clicks) + 1
-				# C = [target_arm]
+				C = [target_arm]
 			else:
-				# C = [target_arm]
+				C = [target_arm]
 				cost = len(clicks) - 1
 		else:
-			# cost = len(clicks)
+			cost = len(clicks)
 			C = []
 
 	else:
+		cost = 0
 		if target_arm in best_arms:
+			if clicks != best_arms.index(target_arm):
+				if clicks == -1:
+					cost = 1
+				else:
+					cost = 2
 			C = best_arms.index(target_arm)
+				
 		else:
+			if clicks != -1:
+				cost = 1
+			else:
+				cost = 0
 			C = -1
-	
+
 	return C, cost
