@@ -6,12 +6,12 @@ import os
 import argparse
 
 # SMALL_SIZE = 18
-# MEDIUM_SIZE = 15
-BIGGER_SIZE = 12
+MEDIUM_SIZE = 15
+BIGGER_SIZE = 20
 
 plt.rc('axes', titlesize=BIGGER_SIZE)     # fontsize of the title
 plt.rc('axes', labelsize=BIGGER_SIZE)    # fontsize of the x and y labels
-plt.rc('legend', fontsize=BIGGER_SIZE)    # legend fontsize
+plt.rc('legend', fontsize=MEDIUM_SIZE)    # legend fontsize
 plt.rc('xtick', labelsize=BIGGER_SIZE)    # fontsize of the tick labels
 plt.rc('ytick', labelsize=BIGGER_SIZE)    # fontsize of the tick labels
 
@@ -65,8 +65,7 @@ quant_num = 0.3
 grouped_df_quantile_min = df.groupby(["Time(Iteration)"]).quantile(quant_num)
 grouped_df_quantile_max = df.groupby(["Time(Iteration)"]).quantile(1-quant_num)
 
-
-# labels = {'Randomized CUCB_Attack': 'Random Target', 'CUCB_Attack': 'Fixed Target', 'CascadeUCB-V-Attack': 'CascadeUCB-V', 'CascadeUCB1-Attack': 'CascadeUCB1', 'CascadeKLUCB-Attack': 'CascadeKLUCB'}
+labels = {'TopRank-AttackThenQuit': 'TopRank-ATQ', 'BatchRank-AttackThenQuit': 'BatchRank-ATQ', 'TopRank-Attack':'TopRank-GA', 'BatchRank-Attack':'BatchRank-GA', 'PBMUCB-Attack':'PBMUCB-GA', 'CascadeKLUCB-Attack':'CascadeKLUCB-GA', 'CascadeUCB1-Attack':'CascadeUCB1-GA'}
 
 fig, ax = plt.subplots()
 ax.ticklabel_format(style='sci', useOffset=True, scilimits=(0, 0))
@@ -75,7 +74,7 @@ colors = list(mcolors.TABLEAU_COLORS.keys())
 cols = list(grouped_df_mean.columns)
 
 for c in range(len(cols)):
-    plt.plot(range(grouped_df_mean.shape[0]), grouped_df_mean[cols[c]], label=cols[c], color=colors[c])
+    plt.plot(range(grouped_df_mean.shape[0]), grouped_df_mean[cols[c]], label=labels[cols[c]], color=colors[c])
     plt.fill_between(grouped_df_std.index, (grouped_df_mean[cols[c]] - grouped_df_std[cols[c]]).clip(0, None), grouped_df_mean[cols[c]] + grouped_df_std[cols[c]], color=colors[c], alpha=0.2)
 
     
@@ -93,6 +92,6 @@ t.set_x(-0.05)
 plt.tight_layout()
 
 print("saving")
-plt.savefig(os.path.join('./SimulationResults', args.exp_name, args.exp_type + '.png'))
+plt.savefig(os.path.join('./SimulationResults', args.exp_name, args.exp_type + '.pdf'))
 # plt.show()
 
