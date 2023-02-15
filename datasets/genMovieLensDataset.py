@@ -88,6 +88,7 @@ class genMovieLensDataset():
         # print(self.target_arms_set)
         # print(self.target_arm)
         # print(dict(sorted(self.w.items(), key=lambda x: x[1], reverse=True)))
+        # print(self.num_arms)
         # exit()
 
         self.w[-10000] = 0
