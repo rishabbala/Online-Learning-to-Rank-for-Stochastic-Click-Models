@@ -75,8 +75,8 @@ class genMovieLensDataset():
 
         # self.target_arms = random.sample(means_05, seed_size)
 
-        self.target_arms_set = list(dict(sorted(self.w.items(), key=lambda x: x[1], reverse=True)).keys())[seed_size:2*seed_size]
-        self.target_arm = list(dict(sorted(self.w.items(), key=lambda x: x[1], reverse=True)).keys())[seed_size]
+        self.target_arm = list(dict(sorted(self.w.items(), key=lambda x: x[1], reverse=True)).keys())[5]
+        self.target_arms_set = [self.target_arm] + list(dict(sorted(self.w.items(), key=lambda x: x[1], reverse=True)).keys())[10:10+seed_size-1]
 
         self.w[-10000] = 0
 
