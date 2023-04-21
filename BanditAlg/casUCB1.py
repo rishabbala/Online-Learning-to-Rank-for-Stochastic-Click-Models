@@ -3,12 +3,13 @@ import numpy as np
 import random
 import copy
 from BanditAlg.attack import generalAttack
-
+from BanditAlg.attack import generalAttack_2
+from BanditAlg.attack import generalAttack_3
 
 
 class CascadeUCB1():
 
-	def __init__(self, dataset, num_arms, seed_size, attack=True):
+	def __init__(self, dataset, num_arms, seed_size, attack='gerneral_2'):
 		self.dataset = dataset
 		self.T = {}
 		self.w_hat = {}
@@ -16,7 +17,7 @@ class CascadeUCB1():
 		self.t = 1
 		self.num_arms = num_arms
 		self.seed_size = seed_size
-		self.attack_bool = attack
+		self.attack = attack
 
 		for i in range(self.num_arms):
 			self.T[i] = 0
@@ -37,17 +38,18 @@ class CascadeUCB1():
 		
 		self.best_arms = list(dict(sorted(self.U.items(), key=lambda x: x[1], reverse=True)).keys())[:self.seed_size]
 
-		if self.attack_bool:
+		if self.attack == 'general_1':
 			best_arms, cost = generalAttack(self.best_arms, self.dataset.target_arms_set, self.seed_size)
 		else:
 			best_arms = copy.deepcopy(self.best_arms)
 			cost = 0
 
-		if len(self.totalCost) == 0:
-			self.totalCost = [cost]
-		else:
-			self.totalCost.append(self.totalCost[-1] + cost)
-		self.cost.append(cost)
+		if self.attack == 'general_1':
+			if len(self.totalCost) == 0:
+				self.totalCost = [cost]
+			else:
+				self.totalCost.append(self.totalCost[-1] + cost)
+			self.cost.append(cost)
 
 		# print(self.best_arms, best_arms, self.dataset.target_arms_set, self.dataset.target_arm)
 
@@ -55,6 +57,22 @@ class CascadeUCB1():
 
 	
 	def updateParameters(self, C):
+
+		if self.attack == 'general_2':
+			C, cost = generalAttack_2(self.best_arms, self.dataset.target_arm, C, self.t)
+			if len(self.totalCost) == 0:
+				self.totalCost = [cost]
+			else:
+				self.totalCost.append(self.totalCost[-1] + cost)
+			self.cost.append(cost)
+
+		if self.attack == 'general_3':
+			C, cost = generalAttack_3(self.best_arms, self.dataset.target_arm, C, self.t)
+			if len(self.totalCost) == 0:
+				self.totalCost = [cost]
+			else:
+				self.totalCost.append(self.totalCost[-1] + cost)
+			self.cost.append(cost)
 
 		if C == -1:
 			C = self.num_arms

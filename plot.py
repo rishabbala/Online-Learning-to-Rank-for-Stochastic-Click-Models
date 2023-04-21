@@ -93,6 +93,6 @@ t.set_x(-0.05)
 plt.tight_layout()
 
 print("saving")
-plt.savefig(os.path.join('./SimulationResults', args.exp_name, args.exp_type + '.png'))
+plt.savefig(os.path.join('./SimulationResults', args.exp_name, args.exp_type + '.pdf'))
 # plt.show()
 

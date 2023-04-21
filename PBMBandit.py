@@ -191,11 +191,12 @@ if __name__ == '__main__':
 
 	algorithms = {}
 	
-	algorithms['PBMUCB-Attack'] = PBMUCB(data, data.num_arms, seed_size, attack='general')
-	algorithms['BatchRank-Attack'] = BatchRank(data, data.num_arms, seed_size, iterations, attack='general')
-	algorithms['TopRank-Attack'] = TopRank(data, data.num_arms, seed_size, iterations, attack='general')
+	algorithms['PBMUCB-Attack-Reduce'] = PBMUCB(data, data.num_arms, seed_size, attack='general_2')
+	algorithms['PBMUCB-Attack-Increase'] = PBMUCB(data, data.num_arms, seed_size, attack='general_3')
+	# algorithms['BatchRank-Attack'] = BatchRank(data, data.num_arms, seed_size, iterations, attack='general')
+	# algorithms['TopRank-Attack'] = TopRank(data, data.num_arms, seed_size, iterations, attack='general')
 
-	algorithms['BatchRank-AttackThenQuit'] = BatchRank(data, data.num_arms, seed_size, iterations, attack='attack&quit')
-	algorithms['TopRank-AttackThenQuit'] = TopRank(data, data.num_arms, seed_size, iterations, attack='attack&quit')
+	# algorithms['BatchRank-AttackThenQuit'] = BatchRank(data, data.num_arms, seed_size, iterations, attack='attack&quit')
+	# algorithms['TopRank-AttackThenQuit'] = TopRank(data, data.num_arms, seed_size, iterations, attack='attack&quit')
 
 	simExperiment.runAlgorithms(algorithms)
