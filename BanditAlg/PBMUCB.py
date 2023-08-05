@@ -5,6 +5,7 @@ import random
 from BanditAlg.attack import generalAttack
 from BanditAlg.attack import generalAttack_2
 from BanditAlg.attack import generalAttack_3
+from BanditAlg.attack import AttackThenQuit
 
 
 
@@ -41,7 +42,7 @@ class PBMUCB():
 				self.U[i] = min(1, max(self.U[i], 0))
 
 		self.best_arms = list(dict(sorted(self.U.items(), key=lambda x: x[1], reverse=True)).keys())[:self.seed_size]
-		
+
 		if self.attack_bool == 'general_1':
 			best_arms, cost = generalAttack(self.best_arms, self.dataset.target_arms_set, self.seed_size)
 		else:
@@ -59,6 +60,8 @@ class PBMUCB():
 		return best_arms
 	
 	def updateParameters(self, C):
+		T1 = 3000
+		
 		if self.attack_bool == 'general_2':
 			C, cost = generalAttack_2(self.best_arms, self.dataset.target_arm, C, self.t)
 			if len(self.totalCost) == 0:
@@ -69,6 +72,16 @@ class PBMUCB():
 
 		if self.attack_bool == 'general_3':
 			C, cost = generalAttack_3(self.best_arms, self.dataset.target_arm, C, self.t)
+			if len(self.totalCost) == 0:
+				self.totalCost = [cost]
+			else:
+				self.totalCost.append(self.totalCost[-1] + cost)
+			self.cost.append(cost)
+		
+		if self.attack_bool == 'attack&quit':
+			cost = 0
+			if self.t <= T1:
+				C, cost = AttackThenQuit(self.best_arms, self.num_arms, self.dataset.target_arm, self.seed_size, C)
 			if len(self.totalCost) == 0:
 				self.totalCost = [cost]
 			else:

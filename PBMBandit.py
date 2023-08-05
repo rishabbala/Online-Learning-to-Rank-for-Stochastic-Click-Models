@@ -38,9 +38,7 @@ class simulateOnlineData:
 			for alg_name, alg in list(algorithms.items()): 
 				S = alg.decide()
 				C = []
-
 				# print(alg_name, S, self.dataset.target_arm)
-
 				for i in range(len(S)):
 					arm = S[i]
 					if self.dataset.w[arm] * self.dataset.examination_prob[i] >= random.uniform(0, 1):
@@ -90,7 +88,10 @@ class simulateOnlineData:
 				f.write('\n') 
 		else:
 			# if run in the experiment, save the results
+			
 			print("Iteration %d" % iter_, " Elapsed time", datetime.datetime.now() - self.startTime)
+			# print(iter_)
+			# print()
 			self.tim_.append(iter_)
 			# for alg_name in algorithms.keys():
 			#     self.BatchCumlateRegret[alg_name].append(sum(self.AlgRegret[alg_name]))
@@ -191,8 +192,11 @@ if __name__ == '__main__':
 
 	algorithms = {}
 	
-	algorithms['PBMUCB-Attack-Reduce'] = PBMUCB(data, data.num_arms, seed_size, attack='general_2')
-	algorithms['PBMUCB-Attack-Increase'] = PBMUCB(data, data.num_arms, seed_size, attack='general_3')
+	# algorithms['PBMUCB-Attack-Reduce'] = PBMUCB(data, data.num_arms, seed_size, attack='general_2')
+	# algorithms['PBMUCB-Attack-Increase'] = PBMUCB(data, data.num_arms, seed_size, attack='general_3')
+	
+	algorithms['PBMUCB-AttackThenQuit'] = PBMUCB(data, data.num_arms, seed_size, attack='attack&quit')
+	
 	# algorithms['BatchRank-Attack'] = BatchRank(data, data.num_arms, seed_size, iterations, attack='general')
 	# algorithms['TopRank-Attack'] = TopRank(data, data.num_arms, seed_size, iterations, attack='general')
 

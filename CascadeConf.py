@@ -1,6 +1,6 @@
 import os
 
-save_address = "./SimulationResults/CascadeBandit_syn3_test"
+save_address = "./SimulationResults/CascadeBandit_ATQ"
 dataset = 'synthetic'
 num_arms = 50
 seed_size = 5

@@ -5,6 +5,7 @@ import copy
 from BanditAlg.attack import generalAttack
 from BanditAlg.attack import generalAttack_2
 from BanditAlg.attack import generalAttack_3
+from BanditAlg.attack import AttackThenQuit
 
 
 class CascadeUCB1():
@@ -18,6 +19,7 @@ class CascadeUCB1():
 		self.num_arms = num_arms
 		self.seed_size = seed_size
 		self.attack = attack
+		print(attack)
 
 		for i in range(self.num_arms):
 			self.T[i] = 0
@@ -57,6 +59,7 @@ class CascadeUCB1():
 
 	
 	def updateParameters(self, C):
+		T1 = 10000
 
 		if self.attack == 'general_2':
 			C, cost = generalAttack_2(self.best_arms, self.dataset.target_arm, C, self.t)
@@ -68,6 +71,16 @@ class CascadeUCB1():
 
 		if self.attack == 'general_3':
 			C, cost = generalAttack_3(self.best_arms, self.dataset.target_arm, C, self.t)
+			if len(self.totalCost) == 0:
+				self.totalCost = [cost]
+			else:
+				self.totalCost.append(self.totalCost[-1] + cost)
+			self.cost.append(cost)
+
+		if self.attack == 'attack&quit':
+			cost = 0
+			if self.t <= T1:
+				C, cost = AttackThenQuit(self.best_arms, self.num_arms, self.dataset.target_arm, self.seed_size, C)
 			if len(self.totalCost) == 0:
 				self.totalCost = [cost]
 			else:

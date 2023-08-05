@@ -192,14 +192,16 @@ if __name__ == '__main__':
 
 	algorithms = {}
 	
-	algorithms['CascadeUCB1-Attack-Reduce'] = CascadeUCB1(data, data.num_arms, seed_size, attack='general_2')
-	algorithms['CascadeKLUCB-Attack-Reduce'] = CascadeKLUCB(data, data.num_arms, seed_size, attack='general_2')
-	algorithms['CascadeUCB1-Attack-Increase'] = CascadeUCB1(data, data.num_arms, seed_size, attack='general_3')
-	algorithms['CascadeKLUCB-Attack-Increase'] = CascadeKLUCB(data, data.num_arms, seed_size, attack='general_3')
+	# algorithms['CascadeUCB1-Attack-Reduce'] = CascadeUCB1(data, data.num_arms, seed_size, attack='general_2')
+	# algorithms['CascadeKLUCB-Attack-Reduce'] = CascadeKLUCB(data, data.num_arms, seed_size, attack='general_2')
+	# algorithms['CascadeUCB1-Attack-Increase'] = CascadeUCB1(data, data.num_arms, seed_size, attack='general_3')
+	# algorithms['CascadeKLUCB-Attack-Increase'] = CascadeKLUCB(data, data.num_arms, seed_size, attack='general_3')
 	# algorithms['BatchRank-Attack'] = BatchRank(data, data.num_arms, seed_size, iterations, attack='general')
 	# algorithms['TopRank-Attack'] = TopRank(data, data.num_arms, seed_size, iterations, attack='general')
 
 	# algorithms['BatchRank-AttackThenQuit'] = BatchRank(data, data.num_arms, seed_size, iterations, attack='attack&quit')
 	# algorithms['TopRank-AttackThenQuit'] = TopRank(data, data.num_arms, seed_size, iterations, attack='attack&quit')
+
+	algorithms['CascadeUCB1-AttackThenQuit'] = CascadeUCB1(data, data.num_arms, seed_size, attack='attack&quit')
 
 	simExperiment.runAlgorithms(algorithms)

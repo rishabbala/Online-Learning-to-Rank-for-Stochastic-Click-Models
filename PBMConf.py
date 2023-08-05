@@ -1,6 +1,7 @@
 import os
 
-save_address = "./SimulationResults/PBMBandit_syn3_test"
+# save_address = "./SimulationResults/PBMBandit_syn3_test"
+save_address = "./SimulationResults/PBMBandit_ATQ"
 dataset = 'synthetic'
 num_arms = 50
 seed_size = 5
